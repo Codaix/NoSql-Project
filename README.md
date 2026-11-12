@@ -1,282 +1,307 @@
-# 🛒 SmartCart — E-Commerce Purchase Intention Analytics
+# SmartCart – E-Commerce Purchase Intention Analytics
 
-**A MongoDB-based analytics and machine learning application for understanding and predicting online shopping purchase behaviour.**
+An end-to-end NoSQL and Machine Learning project that analyses e-commerce shopping behaviour, identifies purchase patterns, and predicts customer purchase intention using MongoDB, Python, and a tuned Random Forest model.
 
-SmartCart analyses e-commerce browsing sessions using MongoDB aggregation pipelines and applies a tuned Random Forest classification model to estimate whether a visitor is likely to make a purchase.
+## 1. Project Overview
 
-The project combines NoSQL database operations, data analytics, machine learning, and an interactive Streamlit dashboard.
+SmartCart is an e-commerce analytics platform built using MongoDB and Streamlit. It analyses online shopping sessions to understand customer browsing behaviour and identify patterns that influence purchasing decisions.
 
----
+The project integrates:
 
-## 📌 Project Overview
+- **MongoDB** – NoSQL database for storing shopping session data.
+- **PyMongo** – Python driver for MongoDB connectivity.
+- **Python** – Data processing and machine learning.
+- **Pandas & NumPy** – Data manipulation and analysis.
+- **Scikit-learn** – Machine learning model development and evaluation.
+- **Streamlit** – Interactive analytics dashboard.
+- **Plotly** – Interactive data visualizations.
+- **Joblib** – Saving and loading trained machine learning models.
 
-The objective of SmartCart is to explore online shopping behaviour and identify patterns associated with purchase decisions.
+The application provides three main modules:
 
-The application provides three main capabilities:
+1. **Business Analytics** – Analyses customer sessions, purchase conversion, visitor types, and browsing behaviour.
+2. **Purchase Prediction** – Uses a tuned Random Forest classifier to predict purchase intention.
+3. **Model Performance** – Presents machine learning evaluation metrics.
 
-- **Business Analytics:** Analyse shopping sessions, conversion rates, visitor types, and browsing behaviour.
-- **Purchase Prediction:** Estimate the probability of a purchase from user-provided session characteristics.
-- **Model Performance:** Examine and compare classification metrics before and after decision-threshold tuning.
+## 2. Dataset Information
 
-### Dataset
-
-The project uses the **Online Shoppers Purchasing Intention Dataset**.
+**Dataset:** Online Shoppers Purchasing Intention Dataset
 
 | Attribute | Value |
-|---|---:|
-| Total records | 12,330 |
-| Features | 18 |
-| Purchase sessions | 1,908 |
-| Non-purchase sessions | 10,422 |
-| Purchase conversion rate | 15.47% |
-
-The target variable is `Revenue`, which indicates whether a shopping session resulted in a purchase.
-
----
-
-## 🧭 Repository Navigation
-
-Start with `app.py` to understand the application, then explore the folders below to understand how the database, analytics, and machine learning components are organised.
-
-| File / Folder | Purpose |
 |---|---|
-| `app.py` | Main Streamlit application and dashboard entry point |
-| `data/` | Data-related project resources |
-| `database/` | MongoDB-related resources and database operations |
-| `ml/` | Machine learning pipeline, training, evaluation, and model-related code |
-| `pages/` | Additional dashboard pages |
-| `reports/` | Generated reports and model evaluation results |
-| `scripts/` | Supporting scripts for project execution and processing |
-| `services/` | Supporting application service modules |
-| `tests/` | Project testing resources |
-| `online_shoppers_intention.csv` | Original dataset |
-| `check_dashboard.py` | Utility script to verify MongoDB connectivity and saved model artifacts |
+| Total Records | 12,330 |
+| Total Features | 18 |
+| Target Variable | Revenue |
+| Purchase Sessions | 1,908 |
+| Non-Purchase Sessions | 10,422 |
+| Purchase Conversion Rate | 15.47% |
 
-### Important application files
+The dataset contains information about visitor types, browsing duration, page visits, bounce rates, exit rates, page values, operating systems, browser information, and other shopping session attributes.
 
-The dashboard expects the following model and report artifacts:
+## 3. Technology Stack
 
-```text
-ml/
-└── saved_models/
-    ├── random_forest_tuned.joblib
-    └── threshold.json
+| Category | Technologies |
+|---|---|
+| Programming Language | Python |
+| Database | MongoDB |
+| Database Connectivity | PyMongo |
+| Data Processing | Pandas, NumPy |
+| Machine Learning | Scikit-learn |
+| Model Persistence | Joblib |
+| Visualization | Plotly |
+| Dashboard | Streamlit |
+| Configuration | python-dotenv |
 
-reports/
-└── threshold_comparison.csv
-```
+## 4. Project Architecture
 
-These files are used by the dashboard to load the trained model, retrieve the selected classification threshold, and display model evaluation results.
-
-**Important:** Ensure these required artifacts are included in the GitHub repository. The dashboard cannot perform predictions if the trained model files are missing.
-
----
-
-## 🏗️ Application Architecture
+The overall workflow follows this structure:
 
 ```text
 Online Shoppers Dataset
-         |
-         v
-   Data Processing
-         |
-         v
-      MongoDB
-         |
-         v
- PyMongo + Aggregation
-         |
-         v
-  Streamlit Dashboard
-         |
-         +----------------------+
-         |                      |
-         v                      v
- Business Analytics     Purchase Prediction
-                                |
-                                v
-                        Tuned Random Forest
-                                |
-                                v
-                        Prediction Probability
-                                |
-                                v
-                      Threshold-based Decision
+          |
+          v
+    Data Processing
+          |
+          v
+   MongoDB Database
+          |
+          v
+     PyMongo Driver
+          |
+          v
+   MongoDB Aggregation
+          |
+          v
+    Python Analytics
+          |
+          +----------------------+
+          |                      |
+          v                      v
+   Business Analytics     Saved Random Forest
+                                 |
+                                 v
+                         Purchase Prediction
+          |                      |
+          +----------------------+
+                     |
+                     v
+             Streamlit Dashboard
+                     |
+                     v
+             Interactive Results
 ```
 
-### Technology Stack
+## 5. MongoDB Implementation
 
-| Technology | Role |
+MongoDB is used as the primary database to store and retrieve shopping session records.
+
+### Database Structure
+
+```text
+MongoDB Server
+    |
+    └── smartcart
+           |
+           └── shopping_sessions
+                    |
+                    └── 12,330 Documents
+```
+
+**Database Name:** `smartcart`
+
+**Collection Name:** `shopping_sessions`
+
+### MongoDB Operations Implemented
+
+The project uses the following MongoDB operations:
+
+| Operation | Purpose |
 |---|---|
-| Python | Core programming language |
-| MongoDB | NoSQL document database |
-| PyMongo | Python–MongoDB connectivity |
-| Streamlit | Interactive dashboard |
-| Pandas | Data manipulation |
-| Plotly | Interactive visualisations |
-| Scikit-learn | Machine learning and evaluation |
-| Joblib | Saving and loading model artifacts |
+| `insertMany()` | Import multiple shopping session documents |
+| `find()` | Retrieve documents |
+| `countDocuments()` | Count matching documents |
+| `aggregate()` | Perform analytical operations |
+| `$group` | Group documents by specified fields |
+| `$sum` | Calculate totals |
+| `$avg` | Calculate averages |
+| `$cond` | Perform conditional calculations |
+| `$sort` | Sort aggregation results |
+| `createIndex()` | Improve query performance |
+| Collection Validator | Enforce document structure and data validation |
 
----
+### Aggregation Analysis
 
-## 📊 Dashboard Navigation
+Three major aggregation analyses are implemented in the dashboard:
 
-The Streamlit application contains three sections accessible through the sidebar.
+**1. Visitor Type Analysis**
 
-### 1. Business Analytics
+Groups shopping sessions by visitor type and calculates:
+- Total sessions.
+- Number of purchases.
+- Purchase conversion rate.
 
-Provides an overview of online shopping activity, including:
+**2. Weekend vs Weekday Analysis**
 
-- Total shopping sessions
-- Purchase and non-purchase sessions
-- Overall conversion rate
-- Session distribution by visitor type
-- Conversion rate by visitor type
-- Weekday versus weekend conversion
-- Browsing behaviour by purchase outcome
+Groups sessions based on the `Weekend` field and compares purchase behaviour.
 
-MongoDB aggregation pipelines are used to calculate these analytics directly from the collection.
+**3. Browsing Behaviour Analysis**
 
-### 2. Purchase Prediction
+Groups sessions by purchase outcome (`Revenue`) and calculates:
+- Number of sessions.
+- Average product-related page visits.
+- Average product-related browsing duration.
+- Average page values.
 
-Allows users to enter characteristics of a shopping session, such as:
+## 6. Machine Learning Implementation
 
-- Visitor type and month
-- Administrative and informational page activity
-- Product-related page views and duration
-- Bounce rate and exit rate
-- Browser, operating system, region, and traffic type
-- Weekend and special-day information
+The project uses a **Random Forest Classifier** to predict whether a visitor is likely to make a purchase.
 
-The trained Random Forest model returns an estimated purchase probability and a classification.
+### Model Development
 
-### 3. Model Performance
+The machine learning workflow includes:
 
-Displays the model evaluation report and compares the default classification threshold with the tuned threshold.
+1. Data preprocessing.
+2. Feature preparation.
+3. Training and validation.
+4. Random Forest classification.
+5. Hyperparameter tuning.
+6. Decision threshold optimization.
+7. Model evaluation.
+8. Saving the trained model using Joblib.
 
-Evaluation metrics include:
+### Model Results
 
-- Accuracy
-- Precision
-- Recall
-- F1-score
-- ROC-AUC
+Recorded project evaluation results:
 
-Threshold tuning adjusts the classification decision according to the validation-selected threshold. It does not retrain the model or change its underlying probability ranking.
+| Metric | Result |
+|---|---:|
+| Random Forest Accuracy | 85.08% |
+| Random Forest ROC-AUC | 0.7946 |
+| Selected Decision Threshold | Approximately 0.154 |
+| Validation F1-Score at Tuned Threshold | 0.3969 |
+| Test Recall at Tuned Threshold | 0.8037 |
 
----
+The decision threshold was adjusted to improve the model's ability to identify potential purchasing sessions.
 
-# ⚙️ Getting Started — Run SmartCart on Your Own PC
+The trained model and threshold metadata are stored separately:
 
-Follow these instructions to download, configure, and run SmartCart locally.
-
-You do not need to use the original developer's computer. You only need the project repository, its dependencies, MongoDB, and the required project files.
-
-## Prerequisites
-
-Install the following:
-
-1. **Python 3.10 or a compatible version**
-2. **MongoDB Community Server**
-3. **MongoDB Shell (mongosh)**
-4. **Git**
-5. A terminal such as Windows PowerShell or Linux/macOS Terminal.
-
-Useful installation links:
-
-- Python: https://www.python.org/downloads/
-- MongoDB: https://www.mongodb.com/try/download/community
-- MongoDB Shell: https://www.mongodb.com/try/download/shell
-- Git: https://git-scm.com/downloads/
-
-## Step 1. Clone the GitHub repository
-
-Open PowerShell or a terminal and execute:
-
-```bash
-git clone https://github.com/Codaix/NoSql-Project.git
+```text
+ml/
+   saved_models/
+       random_forest_tuned.joblib
+       threshold.json
 ```
 
-Navigate into the downloaded project:
+The dashboard loads these saved files instead of retraining the model every time the application starts.
+
+## 7. Dashboard Features
+
+### Business Analytics
+
+- Total shopping sessions.
+- Purchase and non-purchase sessions.
+- Overall conversion rate.
+- Session distribution by visitor type.
+- Conversion rate by visitor type.
+- Weekday vs weekend purchase comparison.
+- Browsing behaviour by purchase outcome.
+
+### Purchase Prediction
+
+Uses the saved Random Forest model to estimate purchase intention based on shopping session features.
+
+### Model Performance
+
+Displays model evaluation information to help understand the classifier's predictive performance.
+
+## 8. Installation and Setup
+
+Follow these instructions to run SmartCart on another computer.
+
+### Prerequisites
+
+Install the following software:
+
+- Python (preferably the same version used during development).
+- MongoDB Community Server.
+- Git.
+- MongoDB Compass (optional, for graphical database management).
+
+### Step 1: Clone the Repository
+
+Open PowerShell or a terminal:
 
 ```bash
-cd NoSql-Project
+git clone YOUR_GITHUB_REPOSITORY_URL
 ```
 
-## Step 2. Create a virtual environment
+Navigate into the project directory:
 
-A virtual environment keeps project dependencies separate from other Python installations.
+```bash
+cd "NoSql Project"
+```
 
-**Windows PowerShell:**
+Replace `YOUR_GITHUB_REPOSITORY_URL` with your actual GitHub repository URL.
 
-```powershell
+### Step 2: Create a Virtual Environment
+
+```bash
 python -m venv .venv
 ```
 
-Activate it:
+Activate it on Windows PowerShell:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-If PowerShell blocks script execution, use:
+If PowerShell blocks activation:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
 ```
 
-Then activate again.
+### Step 3: Install Dependencies
 
-**Linux/macOS:**
+Upgrade pip:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+python -m pip install --upgrade pip
 ```
 
-## Step 3. Install dependencies
-
-With the virtual environment activated, install the required packages:
-
-```bash
-pip install streamlit pymongo python-dotenv pandas plotly scikit-learn joblib
-```
-
-If the repository contains a `requirements.txt` file, you can instead install the dependencies using:
+Install the project dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Step 4. Start MongoDB
+The dependency list should include the compatible versions of:
 
-Make sure the MongoDB Community Server is installed and running.
-
-On Windows, MongoDB can usually be started through the Windows Services application if it was installed as a service.
-
-You can verify the MongoDB Shell connection using:
-
-```bash
-mongosh
+```text
+pymongo
+streamlit
+pandas
+numpy
+plotly
+scikit-learn
+joblib
+python-dotenv
 ```
 
-Inside the shell, execute:
+**Important:** Use a tested `requirements.txt` with compatible package versions, particularly for Scikit-learn, because the saved model was serialized using a specific software environment.
 
-```javascript
-show dbs
+### Step 4: Configure MongoDB
+
+Make sure MongoDB Community Server is installed and running.
+
+The default local MongoDB connection URI is:
+
+```text
+mongodb://localhost:27017/
 ```
 
-Exit the shell:
-
-```javascript
-exit
-```
-
-## Step 5. Configure the database connection
-
-Create a file named `.env` in the root directory of the project.
-
-Add the following configuration:
+Create a `.env` file in the root project directory:
 
 ```env
 MONGODB_URI=mongodb://localhost:27017/
@@ -284,208 +309,161 @@ MONGODB_DATABASE=smartcart
 MONGODB_COLLECTION=shopping_sessions
 ```
 
-The application uses:
+The application reads these environment variables using `python-dotenv`.
 
-```text
-Database:   smartcart
-Collection: shopping_sessions
+### Step 5: Import the Database
+
+The application requires the `smartcart` database and its `shopping_sessions` collection to contain the dataset.
+
+**Important:** Cloning the GitHub repository does not automatically transfer your local MongoDB database.
+
+You must import the dataset on the new computer.
+
+You can either:
+
+- Import `online_shoppers_intention.csv` using the project's database import script.
+- Restore an exported MongoDB database backup using MongoDB Database Tools.
+
+For a standard MongoDB dump containing the `smartcart` folder:
+
+```bash
+mongorestore --db smartcart ./dump/smartcart
 ```
 
-The `.env` file contains local configuration and should not be uploaded to GitHub if it contains private credentials.
+Make sure the collection name is `shopping_sessions`.
 
-## Step 6. Import the dataset into MongoDB
+Also ensure that Boolean fields such as `Revenue` and `Weekend` retain their Boolean data types and numerical features remain numeric.
 
-**This step is essential for a fresh installation.**
+### Step 6: Verify the Database and Model
 
-Cloning the GitHub repository does not automatically populate the new user's MongoDB database.
-
-The original dataset is available in:
-
-```text
-online_shoppers_intention.csv
-```
-
-Run the database initialization or dataset import script provided in the project's `database/` or `scripts/` directory.
-
-Make sure the import process:
-
-- Connects to the `smartcart` database.
-- Imports the dataset into `shopping_sessions`.
-- Creates the required indexes.
-- Applies the collection validation rules, where applicable.
-
-Verify that the collection contains the expected records (12,330 documents).
-
-If the database has already been initialized, avoid importing the dataset again unless the import script safely handles existing records.
-
-## Step 7. Verify the project setup
-
-Run the included verification script:
+Run:
 
 ```bash
 python check_dashboard.py
 ```
 
-This checks MongoDB connectivity, document count, and saved model artifacts.
+This diagnostic script checks:
 
-Resolve any missing database or model-file issues before launching the dashboard.
+- MongoDB connectivity.
+- Database collection access.
+- Number of documents.
+- Saved Random Forest model loading.
+- Selected decision threshold.
+- Number of model features.
 
-## Step 8. Launch SmartCart
+Expected output includes:
 
-From the project root directory, execute:
+```text
+Checking MongoDB connection...
+MongoDB connection: OK
+Collection documents: 12330
+
+Loading saved model...
+Saved model: OK
+Selected threshold: 0.154...
+
+All checks completed.
+```
+
+The document count may differ if you imported a different dataset or subset.
+
+### Step 7: Run the Dashboard
+
+Start Streamlit:
 
 ```bash
 python -m streamlit run app.py
 ```
 
-Streamlit will start the application and display a local URL in the terminal.
-
-Open your browser and visit:
+Open the local URL displayed in the terminal:
 
 ```text
 http://localhost:8501
 ```
 
-**Congratulations! SmartCart is now running locally on your PC.**
+SmartCart should now be running.
 
----
+## 9. Project Structure
 
-## 🛠️ Troubleshooting
-
-### 1. Streamlit command not recognised
-
-Try:
-
-```bash
-python -m streamlit run app.py
-```
-
-### 2. MongoDB connection error
-
-- Verify that MongoDB Community Server is running.
-- Check the `MONGODB_URI` in your `.env` file.
-- Verify that the MongoDB server is accessible on port `27017`.
-
-### 3. No records found in the dashboard
-
-- Verify that the `smartcart` database exists.
-- Check that the `shopping_sessions` collection contains documents.
-- Run the dataset initialization/import script if necessary.
-
-### 4. Missing Python modules
-
-Install the missing dependency:
-
-```bash
-pip install package_name
-```
-
-Alternatively, reinstall all dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-### 5. Missing trained model files
-
-Check that the following files exist:
+The main application files are organized as follows:
 
 ```text
-ml/saved_models/random_forest_tuned.joblib
-ml/saved_models/threshold.json
-reports/threshold_comparison.csv
+NoSql Project/
+│
+├── app.py
+├── check_dashboard.py
+├── .env
+├── requirements.txt
+│
+├── ml/
+│   └── saved_models/
+│       ├── random_forest_tuned.joblib
+│       └── threshold.json
+│
+├── reports/
+│   └── threshold_comparison.csv
+│
+└── README.md
 ```
 
-The model artifacts must be available before using the prediction and model-performance sections.
+Additional folders may contain the dataset, preprocessing scripts, MongoDB setup scripts, model training code, and project documentation.
 
-### 6. Dashboard port already in use
+## 10. Troubleshooting
 
-Start Streamlit on another port:
+| Issue | Solution |
+|---|---|
+| MongoDB connection refused | Ensure MongoDB Server is running on port 27017. |
+| ModuleNotFoundError | Activate the virtual environment and install dependencies. |
+| Collection not found or empty | Import the dataset into `smartcart.shopping_sessions`. |
+| Model file not found | Verify the files inside `ml/saved_models/`. |
+| Streamlit command not recognized | Use `python -m streamlit run app.py`. |
+| Port 8501 already in use | Run Streamlit using another port, such as `--server.port 8502`. |
+| Model compatibility error | Install a compatible Scikit-learn version. |
+| Incorrect analytics results | Verify MongoDB field names and data types. |
 
-```bash
-python -m streamlit run app.py --server.port 8502
-```
+## 11. Important GitHub Notes
 
-Then open:
+Before uploading the project, ensure that the following are not committed:
 
 ```text
-http://localhost:8502
+.venv/
+__pycache__/
+.env
 ```
 
----
+A recommended `.gitignore`:
 
-## 🤖 Machine Learning Approach
-
-SmartCart uses a supervised binary classification approach to predict purchase intention.
-
-**Model:** Tuned Random Forest Classifier
-
-**Target:** `Revenue`
-
-The model estimates the probability of a purchase and applies a selected decision threshold to classify the session.
-
-### Why threshold tuning?
-
-The default classification threshold of 0.5 may not be ideal when the dataset contains substantially more non-purchase sessions than purchase sessions.
-
-Threshold tuning allows the classification decision to be adjusted to improve the balance between precision and recall.
-
-The tuned threshold is stored in:
-
-```text
-ml/saved_models/threshold.json
+```gitignore
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.streamlit/secrets.toml
 ```
 
----
+Do not upload database credentials or private information.
 
-## 🔍 Database Concepts Demonstrated
+The MongoDB database itself is stored separately from the GitHub repository. To reproduce the project on another computer, the database must be imported or restored independently.
 
-This project demonstrates practical MongoDB and NoSQL concepts, including:
+Also ensure that the dataset and trained model files can legally be redistributed before making them public.
 
-- Database and collection creation
-- Document insertion and retrieval
-- BSON document structure
-- Query filtering
-- Index creation
-- Compound indexing
-- Schema validation
-- Aggregation pipelines
-- Grouping and sorting
-- Conditional aggregation
-- Data extraction for machine learning
+## 12. Future Improvements
 
----
+- Deploy the Streamlit dashboard online.
+- Add real-time customer behaviour monitoring.
+- Improve prediction performance through additional feature engineering.
+- Introduce more advanced MongoDB aggregation analytics.
+- Implement automated database backup and recovery.
+- Improve dashboard interactivity and reporting.
 
-## 🧪 Verification
-
-A utility script is included to check the MongoDB connection, document count, and saved model artifacts.
-
-Run it from the project root:
-
-```bash
-python check_dashboard.py
-```
-
----
-
-## 📚 Academic Context
-
-**Course:** CSE494 — Intelligent NoSQL Databases
-
-**Academic Session:** 2026–2027
-
-This project demonstrates the integration of MongoDB-based data management, analytical queries, and machine learning in an interactive application.
-
----
-
-## 👨‍💻 Author
+## Author
 
 **Pranav Sharma**
 
-GitHub: [@Codaix](https://github.com/Codaix)
+**Project:** SmartCart – E-Commerce Purchase Intention Analytics
 
-**Repository:** [NoSql-Project](https://github.com/Codaix/NoSql-Project)
+**Domain:** NoSQL Databases | Data Analytics | Machine Learning
 
 ---
 
-*SmartCart — Turning online shopping session data into actionable insights.*
+*SmartCart demonstrates the integration of NoSQL database management, analytical querying, machine learning, and interactive dashboard development in an end-to-end e-commerce analytics application.*
