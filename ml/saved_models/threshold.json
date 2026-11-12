@@ -1,0 +1,31 @@
+{
+    "model_type": "RandomForestClassifier",
+    "threshold": 0.15400000000000008,
+    "validation_f1": 0.3988,
+    "target": "Revenue",
+    "features": [
+        "Administrative",
+        "Administrative_Duration",
+        "Informational",
+        "Informational_Duration",
+        "ProductRelated",
+        "ProductRelated_Duration",
+        "BounceRates",
+        "ExitRates",
+        "SpecialDay",
+        "Month",
+        "OperatingSystems",
+        "Browser",
+        "Region",
+        "TrafficType",
+        "VisitorType",
+        "Weekend"
+    ],
+    "excluded_features": [
+        "PageValues"
+    ],
+    "random_state": 42,
+    "train_rows": 7398,
+    "validation_rows": 2466,
+    "test_rows": 2466
+}
