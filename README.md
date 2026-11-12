@@ -218,7 +218,6 @@ Collection: shopping_sessions
 
 **Important:** The dashboard expects the MongoDB collection to contain the project dataset. Configure the database and import the dataset before launching the dashboard if the collection is empty.
 
-Never commit `.env` or real database credentials to GitHub.
 
 ### 5. Run the application
 
